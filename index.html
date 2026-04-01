@@ -378,6 +378,63 @@
         border-color: var(--accent);
     }
 
+    /* Vocabulary Quiz */
+    .quiz-score {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.95rem;
+        color: #888;
+        margin-bottom: 2rem;
+    }
+
+    .quiz-prompt {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
+        color: #888;
+        margin-bottom: 0.75rem;
+    }
+
+    .quiz-english {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 2rem;
+    }
+
+    #vocab-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-family: 'Crimson Text', serif;
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+    }
+
+    #vocab-input:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    .quiz-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .btn-secondary {
+        background: var(--light);
+        color: var(--text);
+    }
+
+    .btn-secondary:hover {
+        background: #E0DCD2;
+        transform: translateY(-2px);
+        box-shadow: none;
+    }
+
     /* Room Scene */
     .room-3d.room-scene {
         background: linear-gradient(135deg, #E8E3D8 0%, #D9D3C8 100%);
@@ -422,7 +479,15 @@
             <section id="vocabulary">
                 <h2>Vocabulary</h2>
                 <div class="content-box">
-                    <p>Learn essential Italian words and phrases.</p>
+                    <div class="quiz-score">Score: <span id="quiz-correct">0</span> / <span id="quiz-total">0</span></div>
+                    <div class="quiz-prompt">How do you say this in Italian?</div>
+                    <div class="quiz-english" id="quiz-english"></div>
+                    <input type="text" id="vocab-input" placeholder="Type in Italian..." autocomplete="off" />
+                    <div class="feedback" id="vocab-feedback"></div>
+                    <div class="quiz-buttons">
+                        <button id="vocab-submit">Check</button>
+                        <button id="vocab-next" class="btn-secondary" style="display:none">Next →</button>
+                    </div>
                 </div>
             </section>
 
@@ -515,6 +580,103 @@
         });
     }
 
+    // Vocabulary Quiz
+    const vocabList = [
+        { english: 'table', italian: 'tavolo', article: 'il' },
+        { english: 'chair', italian: 'sedia', article: 'la' },
+        { english: 'sofa / couch', italian: 'divano', article: 'il' },
+        { english: 'armchair', italian: 'poltrona', article: 'la' },
+        { english: 'coffee table', italian: 'tavolino', article: 'il' },
+        { english: 'picture / painting', italian: 'quadro', article: 'il' },
+        { english: 'lamp', italian: 'lampada', article: 'la' },
+        { english: 'mirror', italian: 'specchio', article: 'lo' },
+        { english: 'curtain', italian: 'tenda', article: 'la' },
+        { english: 'carpet / rug', italian: 'tappeto', article: 'il' },
+        { english: 'plant', italian: 'pianta', article: 'la' },
+        { english: 'television', italian: 'televisore', article: 'il' },
+        { english: 'bed', italian: 'letto', article: 'il' },
+        { english: 'bedside table', italian: 'comodino', article: 'il' },
+        { english: 'wardrobe / armoire', italian: 'armadio', article: 'l\'' },
+        { english: 'bookshelf / bookcase', italian: 'libreria', article: 'la' },
+        { english: 'desk', italian: 'scrivania', article: 'la' },
+        { english: 'dresser', italian: 'cassettiera', article: 'la' },
+        { english: 'refrigerator', italian: 'frigorifero', article: 'il' },
+        { english: 'stove / cooker', italian: 'fornello', article: 'il' },
+        { english: 'oven', italian: 'forno', article: 'il' },
+        { english: 'dishwasher', italian: 'lavastoviglie', article: 'la' },
+        { english: 'washing machine', italian: 'lavatrice', article: 'la' },
+        { english: 'microwave', italian: 'microonde', article: 'il' },
+    ];
+
+    let quizQueue = [];
+    let currentWord = null;
+    let quizCorrect = 0;
+    let quizTotal = 0;
+
+    function shuffleArray(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function nextQuizWord() {
+        if (quizQueue.length === 0) quizQueue = shuffleArray(vocabList);
+        currentWord = quizQueue.pop();
+
+        document.getElementById('quiz-english').textContent = currentWord.english;
+        document.getElementById('vocab-input').value = '';
+        document.getElementById('vocab-input').disabled = false;
+        document.getElementById('vocab-submit').style.display = '';
+        document.getElementById('vocab-next').style.display = 'none';
+
+        const feedback = document.getElementById('vocab-feedback');
+        feedback.className = 'feedback';
+        feedback.textContent = '';
+
+        document.getElementById('vocab-input').focus();
+    }
+
+    function setupVocabQuiz() {
+        const submitBtn = document.getElementById('vocab-submit');
+        const nextBtn = document.getElementById('vocab-next');
+        const input = document.getElementById('vocab-input');
+        const feedback = document.getElementById('vocab-feedback');
+
+        submitBtn.addEventListener('click', checkVocabAnswer);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') checkVocabAnswer(); });
+        nextBtn.addEventListener('click', nextQuizWord);
+    }
+
+    function checkVocabAnswer() {
+        if (!currentWord) return;
+        const input = document.getElementById('vocab-input');
+        const feedback = document.getElementById('vocab-feedback');
+        const answer = input.value.toLowerCase().trim();
+        const correct = currentWord.italian.toLowerCase();
+        const withArticle = (currentWord.article + ' ' + currentWord.italian).toLowerCase();
+
+        quizTotal++;
+        document.getElementById('quiz-total').textContent = quizTotal;
+
+        if (answer === correct || answer === withArticle) {
+            quizCorrect++;
+            document.getElementById('quiz-correct').textContent = quizCorrect;
+            feedback.textContent = '✓ Correct! ' + currentWord.article + ' ' + currentWord.italian;
+            feedback.className = 'feedback show correct';
+        } else {
+            feedback.textContent = '✗ The answer is: ' + currentWord.article + ' ' + currentWord.italian;
+            feedback.className = 'feedback show incorrect';
+        }
+
+        input.disabled = true;
+        document.getElementById('vocab-submit').style.display = 'none';
+        document.getElementById('vocab-next').style.display = '';
+        document.getElementById('vocab-next').focus();
+    }
+
     // Navigation Setup
     function setupNavigation() {
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -525,6 +687,8 @@
                 this.classList.add('active');
                 const section = this.dataset.section;
                 document.getElementById(section).classList.add('active');
+
+                if (section === 'vocabulary') nextQuizWord();
             });
         });
     }
@@ -672,6 +836,7 @@
         setupNavigation();
         setupSceneSwitcher();
         setupGenieLamp();
+        setupVocabQuiz();
     });
 </script>
 
