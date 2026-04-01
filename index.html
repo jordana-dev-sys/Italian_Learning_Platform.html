@@ -474,7 +474,7 @@
     <div class="modal-content">
         <h3>✨ Genie's Challenge</h3>
         <p id="modalPrompt">What object would you like to conjure?</p>
-        <input type="text" id="objectInput" placeholder="e.g., una sedia (a chair)" />
+        <input type="text" id="objectInput" placeholder="e.g., un divano, una lampada..." />
         <div class="feedback" id="feedback"></div>
         <div class="modal-buttons">
             <button class="btn-submit" id="submitBtn">Summon</button>
@@ -541,16 +541,33 @@
 
         // Italian objects with articles (correct answers)
         const italianObjects = {
-            'una sedia': { emoji: '🪑', name: 'sedia' },
-            'un tavolo': { emoji: '🛏️', name: 'tavolo' },
-            'una porta': { emoji: '🚪', name: 'porta' },
-            'una finestra': { emoji: '🪟', name: 'finestra' },
-            'una lampada': { emoji: '💡', name: 'lampada' },
-            'un divano': { emoji: '🛋️', name: 'divano' },
-            'uno specchio': { emoji: '🪞', name: 'specchio' },
-            'un quadro': { emoji: '🖼️', name: 'quadro' },
-            'un tappeto': { emoji: '🟫', name: 'tappeto' },
-            'una pianta': { emoji: '🪴', name: 'pianta' }
+            // Living room
+            'un tavolo': { emoji: '🍽️', name: 'tavolo', translation: 'table' },
+            'una sedia': { emoji: '🪑', name: 'sedia', translation: 'chair' },
+            'un divano': { emoji: '🛋️', name: 'divano', translation: 'sofa/couch' },
+            'una poltrona': { emoji: '🪑', name: 'poltrona', translation: 'armchair' },
+            'un tavolino': { emoji: '☕', name: 'tavolino', translation: 'coffee table' },
+            'un quadro': { emoji: '🖼️', name: 'quadro', translation: 'picture/painting' },
+            'una lampada': { emoji: '💡', name: 'lampada', translation: 'lamp' },
+            'uno specchio': { emoji: '🪞', name: 'specchio', translation: 'mirror' },
+            'una tenda': { emoji: '🪟', name: 'tenda', translation: 'curtain' },
+            'un tappeto': { emoji: '🟫', name: 'tappeto', translation: 'carpet/rug' },
+            'una pianta': { emoji: '🪴', name: 'pianta', translation: 'plant' },
+            'un televisore': { emoji: '📺', name: 'televisore', translation: 'television' },
+            // Bedroom
+            'un letto': { emoji: '🛏️', name: 'letto', translation: 'bed' },
+            'un comodino': { emoji: '🕯️', name: 'comodino', translation: 'bedside table' },
+            'un armadio': { emoji: '🚪', name: 'armadio', translation: 'wardrobe/armoire' },
+            'una libreria': { emoji: '📚', name: 'libreria', translation: 'bookshelf/bookcase' },
+            'una scrivania': { emoji: '💻', name: 'scrivania', translation: 'desk' },
+            'una cassettiera': { emoji: '🗄️', name: 'cassettiera', translation: 'dresser' },
+            // Kitchen
+            'un frigorifero': { emoji: '🧊', name: 'frigorifero', translation: 'refrigerator' },
+            'un fornello': { emoji: '🍳', name: 'fornello', translation: 'stove/cooker' },
+            'un forno': { emoji: '🔥', name: 'forno', translation: 'oven' },
+            'una lavastoviglie': { emoji: '🍽️', name: 'lavastoviglie', translation: 'dishwasher' },
+            'una lavatrice': { emoji: '👕', name: 'lavatrice', translation: 'washing machine' },
+            'un microonde': { emoji: '📦', name: 'microonde', translation: 'microwave' },
         };
 
         if (lamp) {
