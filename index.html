@@ -599,6 +599,7 @@
                     obj.style.left = (Math.random() * 80) + 10 + '%';
                     obj.style.top = (Math.random() * 60) + 10 + '%';
                     room.appendChild(obj);
+                    makeDraggable(obj);
                     
                     // Close modal after brief delay
                     setTimeout(() => {
@@ -624,6 +625,46 @@
                 modal.classList.remove('active');
             }
         });
+    }
+
+    // Drag and resize state
+    let dragState = null;
+
+    document.addEventListener('mousemove', function(e) {
+        if (!dragState) return;
+        const containerRect = document.getElementById('room').getBoundingClientRect();
+        dragState.el.style.left = (e.clientX - containerRect.left - dragState.offsetX) + 'px';
+        dragState.el.style.top = (e.clientY - containerRect.top - dragState.offsetY) + 'px';
+    });
+
+    document.addEventListener('mouseup', function() {
+        if (dragState) {
+            dragState.el.style.cursor = 'grab';
+            dragState.el.style.zIndex = '';
+            dragState = null;
+        }
+    });
+
+    function makeDraggable(el) {
+        el.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const rect = el.getBoundingClientRect();
+            const containerRect = document.getElementById('room').getBoundingClientRect();
+            dragState = {
+                el: el,
+                offsetX: e.clientX - rect.left,
+                offsetY: e.clientY - rect.top
+            };
+            el.style.cursor = 'grabbing';
+            el.style.zIndex = 1000;
+        });
+
+        el.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            const currentSize = parseInt(window.getComputedStyle(el).fontSize);
+            const newSize = e.deltaY < 0 ? currentSize + 4 : Math.max(16, currentSize - 4);
+            el.style.fontSize = newSize + 'px';
+        }, { passive: false });
     }
 
     // Call functions when page loads
