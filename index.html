@@ -603,6 +603,27 @@
         { english: 'dishwasher', italian: 'lavastoviglie', article: 'la' },
         { english: 'washing machine', italian: 'lavatrice', article: 'la' },
         { english: 'microwave', italian: 'microonde', article: 'il' },
+        // Verbs (1-20)
+        { english: 'to bark', italian: 'abbaiare', article: '' },
+        { english: 'to abandon', italian: 'abbandonare', article: '' },
+        { english: 'to lower', italian: 'abbassare', article: '' },
+        { english: 'to knock down', italian: 'abbattere', article: '' },
+        { english: 'to match / to pair', italian: 'abbinare', article: '' },
+        { english: 'to abound', italian: 'abbondare', article: '' },
+        { english: 'to button up', italian: 'abbottonare', article: '' },
+        { english: 'to hug', italian: 'abbracciare', article: '' },
+        { english: 'to live / to reside', italian: 'abitare', article: '' },
+        { english: 'to get used to', italian: 'abituarsi', article: '' },
+        { english: 'to happen', italian: 'accadere', article: '' },
+        { english: 'to caress', italian: 'accarezzare', article: '' },
+        { english: 'to turn on', italian: 'accendere', article: '' },
+        { english: 'to accept', italian: 'accettare', article: '' },
+        { english: 'to accompany', italian: 'accompagnare', article: '' },
+        { english: 'to shorten', italian: 'accorciare', article: '' },
+        { english: 'to notice / to realize', italian: 'accorgersi', article: '' },
+        { english: 'to bring close', italian: 'accostare', article: '' },
+        { english: 'to accuse', italian: 'accusare', article: '' },
+        { english: 'to purchase', italian: 'acquistare', article: '' },
     ];
 
     let quizQueue = [];
@@ -653,18 +674,19 @@
         const feedback = document.getElementById('vocab-feedback');
         const answer = input.value.toLowerCase().trim();
         const correct = currentWord.italian.toLowerCase();
-        const withArticle = (currentWord.article + ' ' + currentWord.italian).toLowerCase();
+        const withArticle = currentWord.article ? (currentWord.article + ' ' + currentWord.italian).toLowerCase() : null;
+        const displayWord = currentWord.article ? currentWord.article + ' ' + currentWord.italian : currentWord.italian;
 
         quizTotal++;
         document.getElementById('quiz-total').textContent = quizTotal;
 
-        if (answer === correct || answer === withArticle) {
+        if (answer === correct || (withArticle && answer === withArticle)) {
             quizCorrect++;
             document.getElementById('quiz-correct').textContent = quizCorrect;
-            feedback.textContent = '✓ Correct! ' + currentWord.article + ' ' + currentWord.italian;
+            feedback.textContent = '✓ Correct! ' + displayWord;
             feedback.className = 'feedback show correct';
         } else {
-            feedback.textContent = '✗ The answer is: ' + currentWord.article + ' ' + currentWord.italian;
+            feedback.textContent = '✗ The answer is: ' + displayWord;
             feedback.className = 'feedback show incorrect';
         }
 
